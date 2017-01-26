@@ -22,6 +22,9 @@ type Query df r = Reader df r
 rows :: forall r. DataFrame r -> Int
 rows (DataFrame df) = A.length df
 
+reset :: forall df. Query df df
+reset = ask
+
 filter :: forall r. (r -> Boolean) -> Query (DataFrame r) (DataFrame r)
 filter f = do
   (DataFrame df) <- ask
