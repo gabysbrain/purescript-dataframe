@@ -13,6 +13,7 @@
     "purescript-maps": "^2.1.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^2.0.0"
+    "purescript-psci-support": "^2.0.0",
+    "purescript-quickcheck": "^3.1.1"
   }
 }

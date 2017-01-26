@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "bower": "^1.8.0",
     "pulp": "^10.0.0"
   }
 }
