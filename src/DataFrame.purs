@@ -5,8 +5,10 @@ import Prelude
 import Control.Monad.Reader (Reader, ask, runReader)
 import Data.Array as A
 import Data.Map as M
-import Data.Foldable (class Foldable)
+import Data.Foldable (class Foldable, foldl, foldr, foldMap)
 import Data.Tuple (Tuple(..))
+
+import Data.Monoid (class Monoid)
 
 newtype DataFrame r = DataFrame (Array r)
 
@@ -15,6 +17,23 @@ newtype DataFrame r = DataFrame (Array r)
 --   for computing ranges for axes and bin widths
 -- * ???
 type Query df r = Reader df r
+
+instance semigroupDataFrame :: Semigroup (DataFrame r) where
+  append (DataFrame d1) (DataFrame d2) = DataFrame $ d1 <> d2
+
+instance monoidDataFrame :: Monoid (DataFrame r) where
+  mempty = DataFrame []
+
+instance foldableDataFrame :: Foldable DataFrame where
+  foldr   f z (DataFrame df) = foldr   f z df
+  foldl   f z (DataFrame df) = foldl   f z df
+  foldMap f   (DataFrame df) = foldMap f df
+
+instance functorDataFrame :: Functor DataFrame where
+  map f (DataFrame df) = DataFrame $ map f df
+
+instance applyDataFrame :: Apply DataFrame where
+  apply (DataFrame f) (DataFrame df) = DataFrame $ apply f df
 
 -- originally I was thinking a Query would take a data frame as input and
 -- return a QueryResult but this isn't really valid in the current scheme.
