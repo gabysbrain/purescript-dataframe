@@ -1,5 +1,5 @@
 
-module DataFrame where
+module Data.DataFrame where
 
 import Prelude
 import Control.Monad.Reader (Reader, ask, runReader)
