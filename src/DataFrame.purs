@@ -5,6 +5,7 @@ import Prelude
 import Control.Monad.Reader (Reader, ask, runReader)
 import Data.Array as A
 import Data.Map as M
+import Data.Foldable (class Foldable)
 import Data.Tuple (Tuple(..))
 
 newtype DataFrame r = DataFrame (Array r)
@@ -18,6 +19,9 @@ type Query df r = Reader df r
 -- originally I was thinking a Query would take a data frame as input and
 -- return a QueryResult but this isn't really valid in the current scheme.
 --type QueryResult r s = ???
+
+init :: forall f r. Foldable f => f r -> DataFrame r
+init = DataFrame <<< A.fromFoldable
 
 rows :: forall r. DataFrame r -> Int
 rows (DataFrame df) = A.length df
@@ -60,11 +64,6 @@ chain q1 q2 = do -- TODO: see if there's a better way to do this
   let q1res = runReader q1 df
       q2res = runReader q2 q1res
   pure q2res
-
---original :: forall r s. Query r s -> r
---original = do
-  --df <- ask
-  --pure $ df
 
 _groups :: forall a g. Ord g => (a -> g) -> Array a -> M.Map g (Array a)
 _groups f xs = M.fromFoldableWith (<>) $ map (\x -> Tuple (f x) [x]) xs
