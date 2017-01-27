@@ -1,5 +1,5 @@
 {
-  "name": "ps-query",
+  "name": "purescript-dataframe",
   "ignore": [
     "**/.*",
     "node_modules",

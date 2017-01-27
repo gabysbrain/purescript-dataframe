@@ -1,5 +1,5 @@
 {
-  "name": "ps-query",
+  "name": "purescript-dataframe",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
