@@ -42,6 +42,9 @@ instance applyDataFrame :: Apply DataFrame where
 init :: forall f r. Foldable f => f r -> DataFrame r
 init = DataFrame <<< A.fromFoldable
 
+runQuery :: forall a b. Query a b -> a -> b
+runQuery = runReader
+
 rows :: forall r. DataFrame r -> Int
 rows (DataFrame df) = A.length df
 
