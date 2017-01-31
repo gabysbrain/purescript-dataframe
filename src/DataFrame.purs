@@ -80,6 +80,11 @@ mutate f = do
   (DataFrame df) <- ask
   pure $ DataFrame (map f df)
 
+trim :: forall r. Int -> Query (DataFrame r) (DataFrame r)
+trim n = do
+  (DataFrame df) <- ask
+  pure $ DataFrame (A.take n df)
+
 chain :: forall r s t. Query r s -> Query s t -> Query r t
 chain q1 q2 = do -- TODO: see if there's a better way to do this
   df <- ask
