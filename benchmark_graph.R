@@ -17,14 +17,14 @@ graph.data = function(json) {
 
 ggplot.data = function(orig) {
   t = melt(orig, id.vars="size")
-  t = cbind(t$size, colsplit(t$variable, "\\.", names=c("ds", "type")), t$value)
-  names(t) = c("size", "ds", "type", "value")
-  dcast(t, size + ds ~ ...)
+  t = cbind(t$size, colsplit(t$variable, "\\.", names=c("operation", "type")), t$value)
+  names(t) = c("size", "operation", "type", "value")
+  dcast(t, size + operation ~ ...)
 }
 
 graph = function(data) {
   ggd = ggplot.data(data)
-  ggplot(ggd, aes(x=size, y=mean, colour=ds)) +
+  ggplot(ggd, aes(x=size, y=mean, colour=operation)) +
     geom_point() +
     geom_line() +
     geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd)) +
