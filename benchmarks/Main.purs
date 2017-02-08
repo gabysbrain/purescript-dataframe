@@ -98,8 +98,8 @@ bench_groups = mkBenchmark
   , inputsPerSize: 1
   , gen: randomArray
   , functions: [ benchFn "Array Grouping" (DF._groups f)
-               , benchFn "Seq Grouping" (DF._groups' f)
-               , benchFn "List Grouping" (DF._groups'' f)
+               --, benchFn "Seq Grouping" (DF._groups' f)
+               --, benchFn "List Grouping" (DF._groups'' f)
                -- TODO: benchmark different versions of the code if possible...
                ]
   }

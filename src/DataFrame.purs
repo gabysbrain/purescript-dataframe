@@ -4,9 +4,9 @@ module Data.DataFrame where
 import Prelude
 import Control.Monad.Reader (Reader, ask, runReader)
 import Data.Array as A
-import Data.Sequence as S
-import Data.List as L
-import Data.Map as M
+--import Data.Sequence as S
+--import Data.List as L
+--import Data.Map as M
 import Data.Foldable (class Foldable, foldl, foldr, foldMap)
 import Data.Tuple (Tuple(..))
 
@@ -97,11 +97,11 @@ chain q1 q2 = do -- TODO: see if there's a better way to do this
 _groups :: forall a g. Ord g => (a -> g) -> Array a -> M.Map g (Array a)
 _groups f xs = M.fromFoldableWith (<>) $ map (\x -> Tuple (f x) [x]) xs
 
-_groups' :: forall a g. Ord g => (a -> g) -> Array a -> M.Map g (S.Seq a)
-_groups' f xs = M.fromFoldableWith (<>) $ map (\x -> Tuple (f x) (S.singleton x)) xs
+--_groups' :: forall a g. Ord g => (a -> g) -> Array a -> M.Map g (S.Seq a)
+--_groups' f xs = M.fromFoldableWith (<>) $ map (\x -> Tuple (f x) (S.singleton x)) xs
 
-_groups'' :: forall a g. Ord g => (a -> g) -> Array a -> M.Map g (L.List a)
-_groups'' f xs = M.fromFoldableWith (<>) $ map (\x -> Tuple (f x) (L.singleton x)) xs
+--_groups'' :: forall a g. Ord g => (a -> g) -> Array a -> M.Map g (L.List a)
+--_groups'' f xs = M.fromFoldableWith (<>) $ map (\x -> Tuple (f x) (L.singleton x)) xs
 
 _toGroupInfo :: forall a g
              .  Array (Tuple g (Array a)) 
