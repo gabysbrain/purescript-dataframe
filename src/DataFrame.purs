@@ -6,7 +6,7 @@ import Control.Monad.Reader (Reader, ask, runReader)
 import Data.Array as A
 --import Data.Sequence as S
 --import Data.List as L
---import Data.Map as M
+import Data.Map as M
 import Data.Foldable (class Foldable, foldl, foldr, foldMap)
 import Data.Tuple (Tuple(..))
 
