@@ -82,6 +82,11 @@ mutate f = do
   (DataFrame df) <- ask
   pure $ DataFrame (map f df)
 
+sort :: forall r. (r -> r -> Ordering) -> Query (DataFrame r) (DataFrame r)
+sort f = do
+  (DataFrame df) <- ask
+  pure $ DataFrame (A.sortBy f df)
+
 trim :: forall r. Int -> Query (DataFrame r) (DataFrame r)
 trim n = do
   (DataFrame df) <- ask
