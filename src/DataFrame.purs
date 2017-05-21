@@ -12,12 +12,16 @@ import Data.Tuple (Tuple(..))
 
 import Data.Monoid (class Monoid)
 
+-- | A DataFrame is an ordered set of rows of type `r`.
 newtype DataFrame r = DataFrame (Array r)
 
--- The idea of the query result is to maintain the orignal data frame:
--- * with things like histograms and graphs you want the original frame
---   for computing ranges for axes and bin widths
--- * ???
+-- | A query result gives both the original input and the query result.
+-- | Queries can be chained together.
+-- |
+-- | The idea of the query result is that maintaining the original input
+-- | is helpful for things like histograms and graphs you want the original 
+-- | frame for computing ranges for axes and bin widths
+The idea of the query result is to maintain the orignal data frame:
 type Query df r = Reader df r
 
 instance semigroupDataFrame :: Semigroup (DataFrame r) where
@@ -37,27 +41,33 @@ instance functorDataFrame :: Functor DataFrame where
 instance applyDataFrame :: Apply DataFrame where
   apply (DataFrame f) (DataFrame df) = DataFrame $ apply f df
 
--- originally I was thinking a Query would take a data frame as input and
--- return a QueryResult but this isn't really valid in the current scheme.
---type QueryResult r s = ???
-
+-- | Create a data frame from an arbitrary Foldable. Each item of the Foldable
+-- | will become a "row" of the DataFrame.
 init :: forall f r. Foldable f => f r -> DataFrame r
 init = DataFrame <<< A.fromFoldable
 
+-- | Evaluate the query given the starting input. Returns the result 
+-- | of the Query.
 runQuery :: forall a b. Query a b -> a -> b
 runQuery = runReader
 
+-- | The number of "rows" in the DataFrame.
 rows :: forall r. DataFrame r -> Int
 rows (DataFrame df) = A.length df
 
+-- | Get back the original input so that it can be chained into 
+-- | annother query.
 reset :: forall df. Query df df
 reset = ask
 
+-- | Create a query that will filter a dataframe so that it only contains
+-- | rows where the filter function returns true.
 filter :: forall r. (r -> Boolean) -> Query (DataFrame r) (DataFrame r)
 filter f = do
   (DataFrame df) <- ask
   pure $ DataFrame (A.filter f df)
 
+-- | Group the rows of the DataFrame based on the grouping function.
 group :: forall r g. Ord g 
       => (r -> g) 
       -> Query (DataFrame r) (DataFrame {group :: g, data :: DataFrame r})
@@ -65,6 +75,7 @@ group f = do
   (DataFrame df) <- ask
   pure $ DataFrame $ _toGroupInfo (M.toUnfoldable (_groups f df))
 
+-- | Count the size of each group of rows in the dataframe.
 count :: forall r g. Ord g 
       => (r -> g) 
       -> Query (DataFrame r) (DataFrame {group :: g, count :: Int})
@@ -72,28 +83,37 @@ count f = do
   (DataFrame df) <- ask
   pure $ DataFrame $ _toCountInfo (M.toUnfoldable (_groups f df))
 
+-- | Reduce each row to another value and then get an array of that
+-- | value. Useful for feeding to functions like maximum, average, etc.
 summarize :: forall r x. (r -> x) -> Query (DataFrame r) (Array x)
 summarize f = do
   (DataFrame df) <- ask
   pure $ map f df
 
+-- | Change each row of the DataFrame using the conversion function.
+-- |
+-- | Can be used, e.g., to do column filtering
 mutate :: forall r s. (r -> s) -> Query (DataFrame r) (DataFrame s)
 mutate f = do
   (DataFrame df) <- ask
   pure $ DataFrame (map f df)
 
+-- | Sort the rows of the dataframe by the given sorting function.
 sort :: forall r. (r -> r -> Ordering) -> Query (DataFrame r) (DataFrame r)
 sort f = do
   (DataFrame df) <- ask
   pure $ DataFrame (A.sortBy f df)
 
+-- | Only keep all but the first n rows of the DataFrame.
 trim :: forall r. Int -> Query (DataFrame r) (DataFrame r)
 trim n = do
   (DataFrame df) <- ask
   pure $ DataFrame (A.take n df)
 
+-- | Run 2 queries and return the first input as the context.
 chain :: forall r s t. Query r s -> Query s t -> Query r t
 chain q1 q2 = do -- TODO: see if there's a better way to do this
+  -- TODO: replace this whith >=>
   df <- ask
   let q1res = runReader q1 df
       q2res = runReader q2 q1res
