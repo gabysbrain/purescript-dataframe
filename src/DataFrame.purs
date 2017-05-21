@@ -21,7 +21,8 @@ newtype DataFrame r = DataFrame (Array r)
 -- | The idea of the query result is that maintaining the original input
 -- | is helpful for things like histograms and graphs you want the original 
 -- | frame for computing ranges for axes and bin widths
-The idea of the query result is to maintain the orignal data frame:
+-- |
+-- |The idea of the query result is to maintain the orignal data frame:
 type Query df r = Reader df r
 
 instance semigroupDataFrame :: Semigroup (DataFrame r) where
