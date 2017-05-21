@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "benchmark": "pulp build -I benchmarks --main Benchmarks.Main -O --to output/benchmarks.js && (echo '*' | node output/benchmarks.js)",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "pulp publish"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "benchmark": "^2.1.3",
     "bower": "^1.8.0",
-    "pulp": "^10.0.0"
+    "pulp": "^11.0.0"
+  },
+  "dependencies": {
+    "purescript": "^0.11.4"
   }
 }
